@@ -4,7 +4,7 @@ import './Footer.sass';
 
 const Footer = () => (
   <footer className="footer">
-    footer
+    © 2020 GitHub
   </footer>
 );
 
