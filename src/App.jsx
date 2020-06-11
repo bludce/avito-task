@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 
 import './index.sass';
 
-import Header from './components/header/header'
-import Footer from './components/footer/footer'
+import Header from './components/Header/Header'
+import Footer from './components/Footer/Footer'
 
 class App extends Component {
 
