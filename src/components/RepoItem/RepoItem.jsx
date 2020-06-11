@@ -7,8 +7,7 @@ const RepoItem = ({ id, name, stars, update, url, language }) => {
   return (
     <div className="repo-list__item item">
       <div className="item__title">
-        {/* <Link className="item__link" to={`/repositorie/${id}`}>{name}</Link> */}
-        {name}
+        <Link className="item__link" to={`/repository/${id}`}>{name}</Link>
       </div>
       <div className="item__content">
         <div className="item__stars">

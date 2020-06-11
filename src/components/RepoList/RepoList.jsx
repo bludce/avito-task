@@ -14,7 +14,7 @@ const List = ({ repositories }) => {
       <RepoItem
         key={repo.id}
         id={repo.id}
-        name={repo.name}
+        name={repo.full_name}
         stars={repo.stargazers_count}
         update={repo.updated_at}
         language={repo.language}
