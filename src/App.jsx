@@ -8,6 +8,7 @@ import Footer from './components/Footer/Footer'
 import RepoList from './components/RepoList/RepoList'
 import Repo from './components/Repo/Repo'
 import Pagination from './components/Pagination/Pagination'
+import Loading from './components/Loading/Loading'
 
 class App extends Component {
 
@@ -15,7 +16,8 @@ class App extends Component {
     repositories: {},
     searchText: 'stars',
     totalPages: 0,
-    currentPage: 1
+    currentPage: 1,
+    loading: false
   }
 
   componentDidMount = () => {
@@ -27,11 +29,11 @@ class App extends Component {
       currentPage
     })
 
-    const page = this.state.currentPage || 1;
-    this.loadPage(`https://api.github.com/search/repositories?q=${searchText}&per_page=10&page=${page}&sort=stars&order=desc`);
+    this.loadPage(`https://api.github.com/search/repositories?q=${searchText}&per_page=10&page=${currentPage}&sort=stars&order=desc`);
   }
 
   componentDidUpdate(prevProps, prevState) {
+    
     if (this.state.currentPage !== prevState.currentPage) {
       const searchText = localStorage.getItem('searchText') ? localStorage.getItem('searchText') : this.state.searchText
       const currentPage = localStorage.getItem('currentPage') ? +localStorage.getItem('currentPage') : this.state.currentPage
@@ -61,7 +63,7 @@ class App extends Component {
 
     if (key === 'Enter') {
       this.setState({
-        currentPage: 1
+        currentPage: 1,
       })
 
       this.loadPage(`https://api.github.com/search/repositories?q=${search}&per_page=10&page=1&sort=stars&order=desc`)
@@ -77,14 +79,25 @@ class App extends Component {
   }
 
   loadPage = async (url) => {
-    let response = await fetch(url);
-    let repositories = await response.json();
-    this.setState({
-      repositories,
-      totalPages: repositories.total_count
-    })
-
-    localStorage.setItem('repositories', JSON.stringify(repositories));
+    try {
+      this.setState({
+        loading: true
+      })
+      let response = await fetch(url);
+      let repositories = await response.json();
+      this.setState({
+        repositories,
+        totalPages: repositories.total_count
+      })
+  
+      localStorage.setItem('repositories', JSON.stringify(repositories));
+      this.setState({
+        loading: false
+      })
+    }
+    catch(e) {
+      alert("Превышен лимит запросов, обновите через минуту")
+    }
   }
 
 
@@ -92,13 +105,16 @@ class App extends Component {
 
   render() {
 
-    const { repositories, totalPages, currentPage, searchText } = this.state;
+    const { repositories, totalPages, currentPage, searchText, loading } = this.state;
 
     return (
       <BrowserRouter>
         <div className="app">
           <Header onChange={this.handleInputChange} onKeyPress={this.handleInputSubmit} value={searchText}/>
           <div className="container">
+            {loading &&
+              <Loading />
+            }
             <Route exact path="/">
               <RepoList repositories={repositories} />
               <Pagination totalPages={totalPages} currentPage={currentPage} changeCurrentPage={this.changeCurrentPage}/>

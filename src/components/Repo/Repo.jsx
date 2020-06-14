@@ -8,32 +8,39 @@ class Repo extends Component {
     repo: {},
     user: {},
     langs: {},
-    contributors: {}
+    contributors: {},
+    loading: false
   };
 
   componentDidMount = async () => {
-    const { id } = this.props
-    const repositories = await fetch(`https://api.github.com/repositories/${id}`);
-    const repo = await repositories.json();
-    
-    const languages = await fetch(`${repo.languages_url}`);
-    const langs = await languages.json()
-
-    const user = {  
-      avatar: repo.owner.avatar_url,
-      login: repo.owner.login,
-      url: repo.owner.html_url
+    try {
+      const { id } = this.props
+      const repositories = await fetch(`https://api.github.com/repositories/${id}`);
+      const repo = await repositories.json();
+      
+      const languages = await fetch(`${repo.languages_url}`);
+      const langs = await languages.json()
+  
+      const user = {  
+        avatar: repo.owner.avatar_url,
+        login: repo.owner.login,
+        url: repo.owner.html_url
+      }
+  
+      const getContributors = await fetch(`${repo.contributors_url}`)
+      const contributors = await getContributors.json()
+  
+      this.setState({
+        repo,
+        langs,
+        user,
+        contributors
+      })
     }
-
-    const getContributors = await fetch(`${repo.contributors_url}`)
-    const contributors = await getContributors.json()
-
-    this.setState({
-      repo,
-      langs,
-      user,
-      contributors
-    })
+    catch(e) {
+      alert("Превышен лимит запросов, обновите через минуту")
+    }
+    
 
   }
 
