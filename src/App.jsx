@@ -33,7 +33,6 @@ class App extends PureComponent {
   }
 
   componentDidUpdate = (prevProps, prevState) => {
-    console.log(prevState, this.state)
     if (this.state.currentPage !== prevState.currentPage ) {
       const searchText = localStorage.getItem('searchText') ? localStorage.getItem('searchText') : this.state.searchText
       const currentPage = localStorage.getItem('currentPage') ? +localStorage.getItem('currentPage') : this.state.currentPage
@@ -95,6 +94,9 @@ class App extends PureComponent {
     }
     catch(e) {
       alert("Превышен лимит запросов, обновите через минуту")
+      this.setState({
+        loading: false
+      })
     }
   }
 

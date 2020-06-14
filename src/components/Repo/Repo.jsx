@@ -40,8 +40,6 @@ class Repo extends Component {
     catch(e) {
       alert("Превышен лимит запросов, обновите через минуту")
     }
-    
-
   }
 
   render () {
