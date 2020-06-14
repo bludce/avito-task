@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { BrowserRouter, Route } from 'react-router-dom';
+import { BrowserRouter, Route, Redirect } from 'react-router-dom';
 
 import './index.sass';
 
@@ -47,6 +47,7 @@ class App extends Component {
       })
 
       this.loadPage(`https://api.github.com/search/repositories?q=${searchText}&per_page=10&page=1&sort=stars&order=desc`)
+     
     }
   }
 

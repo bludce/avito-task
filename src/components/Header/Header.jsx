@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types';
 
 import './Header.sass';
@@ -14,6 +15,7 @@ const Header = ({onChange, onKeyPress}) => (
         onChange={onChange}
         onKeyPress={onKeyPress}
       />
+      <Link to="/" className="header__link">Главная</Link>
     </div>
   </header>
 );

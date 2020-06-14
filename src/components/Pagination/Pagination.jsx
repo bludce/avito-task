@@ -24,10 +24,10 @@ const Pagination = ({totalPages, currentPage, changeCurrentPage}) => {
             {page}
           </li>
         )}
-        <li onClick={() => {changeCurrentPage(currentPage + 1)}}  className={`pagination__item stars__item--next ${currentPage === totalPages ? 'disabled' : ''}`}>
+        <li onClick={() => {changeCurrentPage(currentPage + 1)}}  className={`pagination__item stars__item--next ${currentPage === 10 ? 'disabled' : ''}`}>
           {`>`}
         </li>
-        <li onClick={() => {changeCurrentPage(10)}} className={`pagination__item stars__item--last ${currentPage === totalPages ? 'disabled' : ''}`}>
+        <li onClick={() => {changeCurrentPage(10)}} className={`pagination__item stars__item--last ${currentPage === 10 ? 'disabled' : ''}`}>
           {`>>`}
         </li>
       </ul>
