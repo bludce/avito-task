@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { BrowserRouter, Route } from 'react-router-dom';
 
 import './index.sass';
@@ -10,7 +10,7 @@ import Repo from './components/Repo/Repo'
 import Pagination from './components/Pagination/Pagination'
 import Loading from './components/Loading/Loading'
 
-class App extends Component {
+class App extends PureComponent {
 
   state = {
     repositories: {},
@@ -32,9 +32,9 @@ class App extends Component {
     this.loadPage(`https://api.github.com/search/repositories?q=${searchText}&per_page=10&page=${currentPage}&sort=stars&order=desc`);
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    
-    if (this.state.currentPage !== prevState.currentPage) {
+  componentDidUpdate = (prevProps, prevState) => {
+    console.log(prevState, this.state)
+    if (this.state.currentPage !== prevState.currentPage ) {
       const searchText = localStorage.getItem('searchText') ? localStorage.getItem('searchText') : this.state.searchText
       const currentPage = localStorage.getItem('currentPage') ? +localStorage.getItem('currentPage') : this.state.currentPage
 
@@ -87,13 +87,11 @@ class App extends Component {
       let repositories = await response.json();
       this.setState({
         repositories,
-        totalPages: repositories.total_count
+        totalPages: repositories.total_count,
+        loading: false
       })
   
       localStorage.setItem('repositories', JSON.stringify(repositories));
-      this.setState({
-        loading: false
-      })
     }
     catch(e) {
       alert("Превышен лимит запросов, обновите через минуту")
