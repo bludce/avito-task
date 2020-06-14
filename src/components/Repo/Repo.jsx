@@ -7,39 +7,44 @@ class Repo extends Component {
   state = {
     repo: {},
     user: {},
-    langs: {}
+    langs: {},
+    contributors: {}
   };
 
   componentDidMount = async () => {
     const { id } = this.props
-    let repositories = await fetch(`https://api.github.com/repositories/${id}`);
-    let repo = await repositories.json();
+    const repositories = await fetch(`https://api.github.com/repositories/${id}`);
+    const repo = await repositories.json();
     
-    let languages = await fetch(`${repo.languages_url}`);
-    let langs = await languages.json()
+    const languages = await fetch(`${repo.languages_url}`);
+    const langs = await languages.json()
 
-    let user = {  
+    const user = {  
       avatar: repo.owner.avatar_url,
       login: repo.owner.login,
       url: repo.owner.html_url
     }
 
+    const getContributors = await fetch(`${repo.contributors_url}`)
+    const contributors = await getContributors.json()
+
     this.setState({
       repo,
       langs,
-      user
+      user,
+      contributors
     })
 
   }
 
   render () {
 
-    const { repo, langs, user } = this.state
+    const { repo, langs, user, contributors } = this.state
     const { name, stargazers_count, updated_at, description } = repo
     const { avatar, login, url } = user
     
     const arrLangs = Object.keys(langs)
-
+    
     return (
       <div className="repo">
         <div className="repo__user user">
@@ -71,6 +76,18 @@ class Repo extends Component {
                 <span className="languages__item" key={lang}>{lang}</span>
               )
             })}          
+          </div>
+
+          <h2 className="repo-content__title">Авторы</h2>
+          <div className="contributors">
+            {Array.from(contributors).map(({id, login, avatar_url, html_url}) => {
+              return (
+                <a href={html_url} target="_blank" className="contributors__item" key={id}>
+                  <img src={avatar_url} alt="" className="contributors__img"/>
+                  <div className="contributors__name">{login}</div>
+                </a>
+              )
+            })}
           </div>
         </div>
       </div>

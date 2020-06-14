@@ -7,8 +7,6 @@ const List = ({ repositories }) => {
   
   const {items = []} = repositories
 
-  console.log(items)
-
   const repoItems = items.map((repo) => {
     return (
       <RepoItem
