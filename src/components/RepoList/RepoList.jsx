@@ -1,5 +1,6 @@
 import React from 'react';
 import './RepoList.sass'
+import PropTypes from 'prop-types';
 
 import RepoItem from '../RepoItem/RepoItem'
 
@@ -25,6 +26,14 @@ const List = ({ repositories }) => {
     <div className="repo-list">{repoItems}</div>
   );
 
+}
+
+List.propTypes = {
+  repositories: PropTypes.object,
+}
+
+List.defaultProps = {
+  repositories: {}
 }
 
 export default List;

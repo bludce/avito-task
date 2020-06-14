@@ -1,8 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom'
+import PropTypes from 'prop-types';
+
 import './RepoItem.sass'
 
-const RepoItem = ({ id, name, stars, update, url, language }) => {
+const RepoItem = ({ id, name, stars, update, language }) => {
 
   return (
     <div className="repo-list__item item">
@@ -20,6 +22,22 @@ const RepoItem = ({ id, name, stars, update, url, language }) => {
       
     </div>
   );
+}
+
+RepoItem.propTypes = {
+  id: PropTypes.number,
+  name: PropTypes.string,
+  stars: PropTypes.number,
+  update: PropTypes.string,
+  language: PropTypes.string,
+}
+
+RepoItem.defaultProps = {
+  id: 0,
+  name: '',
+  stars: 0,
+  update: '',
+  language: '',
 }
 
 export default RepoItem
