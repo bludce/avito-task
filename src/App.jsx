@@ -11,15 +11,34 @@ import Repo from './components/Repo/Repo'
 class App extends Component {
 
   state = {
-    repositories: {}
+    repositories: {},
+    searchText: ''
   }
 
   componentDidMount = async () => {
-    let response = await fetch('https://api.github.com/search/repositories?q=stars&per_page=10&page=2&sort=stars&order=desc');
+    let response = await fetch('https://api.github.com/search/repositories?q=stars&per_page=10&page=1&sort=stars&order=desc');
     let repositories = await response.json();
     this.setState({
       repositories
     })
+  }
+
+  handleInputChange = ({ target: { value } }) => {
+    this.setState({
+      searchText: value,
+    })
+  }
+
+  handleInputSubmit = async ({ key }) => {
+    const { searchText } = this.state;
+
+    if (key === 'Enter') {
+      let response = await fetch(`https://api.github.com/search/repositories?q=${searchText}&per_page=10&page=1&sort=stars&order=desc`);
+      let repositories = await response.json();
+      this.setState({
+        repositories
+      })
+    }
   }
 
   render() {
@@ -29,7 +48,7 @@ class App extends Component {
     return (
       <BrowserRouter>
         <div className="app">
-          <Header />
+          <Header onChange={this.handleInputChange} onKeyPress={this.handleInputSubmit}/>
           <div className="container">
             <Route exact path="/">
               <RepoList repositories={repositories} />
