@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { BrowserRouter, Route, Redirect } from 'react-router-dom';
+import { BrowserRouter, Route } from 'react-router-dom';
 
 import './index.sass';
 
@@ -22,7 +22,6 @@ class App extends Component {
     const searchText = localStorage.getItem('searchText') ? localStorage.getItem('searchText') : this.state.searchText
     const currentPage = localStorage.getItem('currentPage') ? +localStorage.getItem('currentPage') : this.state.currentPage
 
-
     this.setState({
       searchText,
       currentPage
@@ -34,9 +33,10 @@ class App extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (this.state.currentPage !== prevState.currentPage) {
-      const { searchText } = this.state
-      const page = this.state.currentPage
-      this.loadPage(`https://api.github.com/search/repositories?q=${searchText}&per_page=10&page=${page}&sort=stars&order=desc`);
+      const searchText = localStorage.getItem('searchText') ? localStorage.getItem('searchText') : this.state.searchText
+      const currentPage = localStorage.getItem('currentPage') ? +localStorage.getItem('currentPage') : this.state.currentPage
+
+      this.loadPage(`https://api.github.com/search/repositories?q=${searchText}&per_page=10&page=${currentPage}&sort=stars&order=desc`);
     }
   }
 
@@ -44,18 +44,27 @@ class App extends Component {
     this.setState({
       searchText: value,
     })
-    localStorage.setItem('searchText', value);
   }
 
   handleInputSubmit = async ({ key }) => {
     const { searchText } = this.state;
+    let search = searchText
+    
+    if (searchText === '') {
+      search = 'stars'
+    } else {
+      search = searchText
+    }
+
+    localStorage.setItem('searchText', search);
+    localStorage.setItem('currentPage', 1);
 
     if (key === 'Enter') {
       this.setState({
         currentPage: 1
       })
 
-      this.loadPage(`https://api.github.com/search/repositories?q=${searchText}&per_page=10&page=1&sort=stars&order=desc`)
+      this.loadPage(`https://api.github.com/search/repositories?q=${search}&per_page=10&page=1&sort=stars&order=desc`)
      
     }
   }
