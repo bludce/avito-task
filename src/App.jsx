@@ -7,20 +7,29 @@ import Header from './components/Header/Header'
 import Footer from './components/Footer/Footer'
 import RepoList from './components/RepoList/RepoList'
 import Repo from './components/Repo/Repo'
+import Pagination from './components/Pagination/Pagination'
 
 class App extends Component {
 
   state = {
     repositories: {},
-    searchText: ''
+    searchText: 'stars',
+    totalPages: 0,
+    currentPage: 1
   }
 
-  componentDidMount = async () => {
-    let response = await fetch('https://api.github.com/search/repositories?q=stars&per_page=10&page=1&sort=stars&order=desc');
-    let repositories = await response.json();
-    this.setState({
-      repositories
-    })
+  componentDidMount = () => {
+    const { searchText } = this.state
+    const page = this.state.currentPage || 1;
+    this.loadPage(`https://api.github.com/search/repositories?q=${searchText}&per_page=10&page=${page}&sort=stars&order=desc`);
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.currentPage !== prevState.currentPage) {
+      const { searchText } = this.state
+      const page = this.state.currentPage
+      this.loadPage(`https://api.github.com/search/repositories?q=${searchText}&per_page=10&page=${page}&sort=stars&order=desc`);
+    }
   }
 
   handleInputChange = ({ target: { value } }) => {
@@ -33,18 +42,36 @@ class App extends Component {
     const { searchText } = this.state;
 
     if (key === 'Enter') {
-      let response = await fetch(`https://api.github.com/search/repositories?q=${searchText}&per_page=10&page=1&sort=stars&order=desc`);
-      let repositories = await response.json();
       this.setState({
-        repositories
+        currentPage: 1
       })
+
+      this.loadPage(`https://api.github.com/search/repositories?q=${searchText}&per_page=10&page=1&sort=stars&order=desc`)
     }
   }
 
+  changeCurrentPage = (currentPage) => {
+    this.setState({
+      currentPage
+    })
+  }
+
+  loadPage = async (url) => {
+    let response = await fetch(url);
+    let repositories = await response.json();
+    this.setState({
+      repositories,
+      totalPages: repositories.total_count
+    })
+  }
+
+
+  
+
   render() {
 
-    const { repositories } = this.state;
-    
+    const { repositories, totalPages, currentPage } = this.state;
+
     return (
       <BrowserRouter>
         <div className="app">
@@ -52,6 +79,7 @@ class App extends Component {
           <div className="container">
             <Route exact path="/">
               <RepoList repositories={repositories} />
+              <Pagination totalPages={totalPages} currentPage={currentPage} changeCurrentPage={this.changeCurrentPage}/>
             </Route>
             <Route 
               exact
