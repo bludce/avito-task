@@ -3,13 +3,14 @@ import PropTypes from 'prop-types';
 
 import './Input.sass';
 
-const Input = ({onChange, onKeyPress}) => {
+const Input = ({onChange, onKeyPress, value}) => {
   return (
     <input 
       type="text" 
       className="input" 
       onChange={onChange}
       onKeyPress={onKeyPress}
+      value={value}
     />   
   )
 };

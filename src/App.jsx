@@ -19,7 +19,15 @@ class App extends Component {
   }
 
   componentDidMount = () => {
-    const { searchText } = this.state
+    const searchText = localStorage.getItem('searchText') ? localStorage.getItem('searchText') : this.state.searchText
+    const currentPage = localStorage.getItem('currentPage') ? +localStorage.getItem('currentPage') : this.state.currentPage
+
+
+    this.setState({
+      searchText,
+      currentPage
+    })
+
     const page = this.state.currentPage || 1;
     this.loadPage(`https://api.github.com/search/repositories?q=${searchText}&per_page=10&page=${page}&sort=stars&order=desc`);
   }
@@ -36,6 +44,7 @@ class App extends Component {
     this.setState({
       searchText: value,
     })
+    localStorage.setItem('searchText', value);
   }
 
   handleInputSubmit = async ({ key }) => {
@@ -52,6 +61,7 @@ class App extends Component {
   }
 
   changeCurrentPage = (currentPage) => {
+    localStorage.setItem('currentPage', currentPage);
     this.setState({
       currentPage
     })
@@ -64,6 +74,8 @@ class App extends Component {
       repositories,
       totalPages: repositories.total_count
     })
+
+    localStorage.setItem('repositories', JSON.stringify(repositories));
   }
 
 
@@ -71,12 +83,12 @@ class App extends Component {
 
   render() {
 
-    const { repositories, totalPages, currentPage } = this.state;
+    const { repositories, totalPages, currentPage, searchText } = this.state;
 
     return (
       <BrowserRouter>
         <div className="app">
-          <Header onChange={this.handleInputChange} onKeyPress={this.handleInputSubmit}/>
+          <Header onChange={this.handleInputChange} onKeyPress={this.handleInputSubmit} value={searchText}/>
           <div className="container">
             <Route exact path="/">
               <RepoList repositories={repositories} />
